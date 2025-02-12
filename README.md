@@ -10,9 +10,9 @@ informed decisions and optimize operations.
 # Team Member
 Ayesha Siddika (22234103099) <br>
 Sanjida Khanom (22234103103) <br>
-Omar Farque    (22234103118) 
+Omar Farque    (22234103118) <br>
 Sadia Mehrin Rahi (22234103122) <br>
-Istiyak Hasan Maruf (22234103130) < br >
+Istiyak Hasan Maruf (22234103130) <br>
 
 # Problem Statement:
 ● Fragmented Data Sources: Data spread to make it hard to consolidate and analyze.
