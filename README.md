@@ -15,12 +15,12 @@ Sadia Mehrin Rahi (22234103122) <br>
 Istiyak Hasan Maruf (22234103130) <br>
 
 # Problem Statement:
-● Fragmented Data Sources: Data spread to make it hard to consolidate and analyze.
-● Inefficient Reporting: Outdated methods and static reports hinder real-time analysis and decision-making.
-● Limited Insights: Lack of tools to track and analyze key performance metrics.
-● Inventory Management Issues: Poor forecasting leads to stockouts or overstock, impacting profitability.
-● Compliance Challenges: Cumbersome reporting and documentation increase risk of errors and breaches.
-● User Experience Problems: Non-user-friendly systems lead to underutilization and inefficiencies.
+● Fragmented Data Sources: Data spread to make it hard to consolidate and analyze. <br>
+● Inefficient Reporting: Outdated methods and static reports hinder real-time analysis and decision-making. <br>
+● Limited Insights: Lack of tools to track and analyze key performance metrics. <br>
+● Inventory Management Issues: Poor forecasting leads to stockouts or overstock, impacting profitability. <br>
+● Compliance Challenges: Cumbersome reporting and documentation increase risk of errors and breaches. <br>
+● User Experience Problems: Non-user-friendly systems lead to underutilization and inefficiencies. <br>
 
 # Motivation
 This pharmacy data analytics dashboard project aims to streamline the management of pharmaceutical
