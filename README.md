@@ -1,4 +1,4 @@
-# Pharmacy-Data-Analytics-Dashboard
+<ul><h1>Pharmacy-Data-Analytics-Dashboard</h1></ul>
 The Pharmacy Data Analytics Dashboard project is designed to address the
 growing need for advanced data management and analysis in the pharmacy industry. As
 pharmacies navigate an increasingly complex landscape of inventory management, patient
