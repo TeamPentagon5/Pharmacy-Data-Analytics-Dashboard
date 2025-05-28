@@ -17,7 +17,7 @@ function Sidebar() {
     return (
         <div className="sidebar">
             <div className="logo">
-                <Link to="/" style={{ textDecoration: 'none' }}>
+                <Link to="/Home" style={{ textDecoration: 'none' }}>
                     <h3 className="text_none">Dashboard</h3>
                 </Link>
             </div>
@@ -25,7 +25,7 @@ function Sidebar() {
             <div className="links">
                 <ul>
                     <p className="spann">Main</p>
-                    <Link to="/" style={{ textDecoration: 'none' }}>
+                    <Link to="/Home" style={{ textDecoration: 'none' }}>
                         <li>
                             <DashboardIcon className="icon" /> Dashboard
                         </li>

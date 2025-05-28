@@ -116,7 +116,7 @@ function Navbar() {
                             <div className="links">
                                 <ul>
                                     <p className="spann">Main</p>
-                                    <Link to="/" style={{ textDecoration: 'none' }}>
+                                    <Link to="/Home" style={{ textDecoration: 'none' }}>
                                         <li>
                                             <DashboardIcon className="icon" /> Dashboard
                                         </li>

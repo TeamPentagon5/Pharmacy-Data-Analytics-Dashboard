@@ -7,7 +7,6 @@ body {
   color: #fff;
 }
 
-
 .login-container {
   background-position: center center;
   display: flex;
@@ -23,7 +22,7 @@ body {
   box-shadow: 0 0 10px #000;
   width: 100%;
   max-width: 400px;
-  height:400px;
+  height: 400px;
   opacity: 0.8;
   margin-left: 200px;
   text-shadow: 2px 2px 4px #000000;
@@ -45,15 +44,12 @@ body {
   filter: blur(2px);
 }
 
-
-
 .login-form .login-header {
   font-size: 32px;
   font-weight: 600;
   padding-bottom: 30px;
   text-align: center;
 }
-
 
 .login-form input {
   margin: 10px 0px;
@@ -64,7 +60,7 @@ body {
   font-size: 18px;
 }
 
-.login-form input[type=checkbox] {
+.login-form input[type="checkbox"] {
   display: none;
 }
 
@@ -102,10 +98,7 @@ body {
   cursor: pointer;
 }
 
-
-
-
-.login-form .login-button{
+.login-form .login-button {
   background-color: deepskyblue;
   color: #fff;
   border: none;
@@ -116,12 +109,6 @@ body {
   padding: 10px;
   margin: 20px 0px;
 }
-
-
-
-
-
-
 
 .login-button:hover {
   background-color: #3a4751;

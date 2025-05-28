@@ -13,12 +13,15 @@ function VerifyCodePage() {
         e.preventDefault();
 
         try {
-            const response = await fetch(`http://localhost:5000/api/VerifyCode/${email}/${otp}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await fetch(
+                `http://localhost:5000/api/CodeVerify/${encodeURIComponent(email)}/${otp}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
             const result = await response.json();
 
@@ -34,7 +37,7 @@ function VerifyCodePage() {
             }
         } catch (error) {
             console.error('Error verifying OTP:', error);
-            setMessage('An error occurred. Please try again.');
+            setMessage(`An error occurred: ${error.message}`);
             setIsSuccess(false);
         }
     };

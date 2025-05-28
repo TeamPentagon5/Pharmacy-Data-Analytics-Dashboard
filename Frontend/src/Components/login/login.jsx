@@ -27,7 +27,7 @@ function LoginPage() {
                 // If login is successful, store the token in localStorage (or sessionStorage)
                 localStorage.setItem('authToken', response.data.Token);
                 // Redirect to the home page (or any other page)
-                navigate('/');
+                navigate('/Home');
             } else {
                 // Show failure message if login is unsuccessful
                 setMessage(response.data.Message);

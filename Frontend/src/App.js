@@ -13,6 +13,7 @@ import Valid from './Pages/Forgot/forgot';
 import Login from './Pages/Login/Login';
 import Lists from './Pages/UserLists/UserLists';
 import Verify from './Pages/VerifyCode/verifycode';
+import ResetPassword from './Pages/ResetPassword/ResetPassword';
 
 // Dynamicaly change the data for different pages(replaceable)
 const userInpDetails = [
@@ -113,6 +114,53 @@ const productInpDetails = [
         errorMsg: 'This field is required!',
     },
 ];
+const orderInpDetails = [
+    {
+        id: 1,
+        name: 'medicine',
+        lable: 'Medicine',
+        type: 'text',
+        placeholder: 'Medicine Name',
+        required: true,
+        errorMsg: 'Medicine name is required!',
+    },
+    {
+        id: 2,
+        name: 'quantity',
+        lable: 'Quantity',
+        type: 'number',
+        placeholder: 'Quantity',
+        required: true,
+        errorMsg: 'Quantity is required!',
+    },
+    {
+        id: 3,
+        name: 'deliveryDate',
+        lable: 'Delivery Date',
+        type: 'date',
+        placeholder: 'Delivery Date',
+        required: true,
+        errorMsg: 'Delivery date is required!',
+    },
+    {
+        id: 4,
+        name: 'company',
+        lable: 'Company',
+        type: 'text',
+        placeholder: 'Company Name',
+        required: true,
+        errorMsg: 'Company name is required!',
+    },
+    {
+        id: 5,
+        name: 'status',
+        lable: 'Status',
+        type: 'text', // you could change this to select if needed
+        placeholder: 'Order Status',
+        required: true,
+        errorMsg: 'Status is required!',
+    },
+];
 const blogInputs = [
     {
         id: 1,
@@ -152,16 +200,19 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     <Route path="/">
-                        <Route index element={<Home />} />
-                        <Route path="Login" element={<Login />} />
+                        <Route index element={<Login />} />
+                        <Route path="login" element={<Login />} />
+                        <Route path="Home" element={<Home />} />
                         <Route path="registration" element={<RegistrationPage />} />
+                        <Route path="/reset-password" element={<ResetPassword />} />
                         <Route path="forgot" element={<Valid />} />
                         <Route path="verifycode" element={<Verify />} />
+                        <Route path="/orders" element={<Orders />} />
 
                         {/* nested routes */}
                         <Route path="users">
                             <Route index element={<Lists type="user" />} />
-                            <Route path=":userId" element={<Detail />} />
+                            <Route path=":userId" element={<Detail type="USER" />} />
                             <Route
                                 path="addnew"
                                 element={
@@ -173,9 +224,6 @@ function App() {
                                 }
                             />
                         </Route>
-
-                        <Route path="orders" element={<Orders />} />
-
                         {/* nested routes */}
                         <Route path="products">
                             <Route index element={<Lists type="product" />} />

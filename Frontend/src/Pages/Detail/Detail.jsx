@@ -20,7 +20,6 @@ function Detail() {
                 <div className="user_info">
                     <div className="user_detail">
                         <img src={userPic} alt="user" className="user_image" />
-
                         <div className="user_detailss">
                             <p className="name">Name: John</p>
                             <p>Email: johndoe33@gmail.com</p>
@@ -42,5 +41,4 @@ function Detail() {
         </div>
     );
 }
-
 export default Detail;
