@@ -6,19 +6,17 @@ jobs:
   frontend-tests:
     runs-on: ubuntu-latest
 
-    services:
-      mongo:
-        image: mongo:5.0
-        ports:
-          - 27017:27017
-
-    env:
-      MONGODB_CONNECTION: mongodb://mongo:27017/Pharmachy_Dashboard
-      HTTP_PROXY: ''
-      HTTPS_PROXY: ''
-
     steps:
       - uses: actions/checkout@v3
+
+      # Cache backend deps
+      - name: Cache backend dependencies
+        uses: actions/cache@v3
+        with:
+          path: Backend/node_modules
+          key: ${{ runner.os }}-backend-${{ hashFiles('Backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-
 
       - name: Setup Node for Backend
         uses: actions/setup-node@v4
@@ -29,21 +27,31 @@ jobs:
         working-directory: Backend
         run: npm install --ignore-scripts
 
-
-      - name: Start Backend
+      # Start backend and wait for it to be ready
+      - name: Start Backend and wait
         working-directory: Backend
         run: |
-          npm start &
-          echo "Waiting for backend to be ready..."
-          for i in {1..20}; do
-            if curl --silent http://localhost:5000/; then
-              echo "✅ Backend is up!"
-              break
-            else
-              echo "⏳ Still waiting for backend..."
-              sleep 3
-            fi
+          npm start &           # start backend in background
+          n=0
+          until curl --silent http://localhost:5000/ || [ $n -eq 30 ]; do
+            echo "Waiting for backend to be ready..."
+            sleep 3
+            n=$((n+1))
           done
+          if [ $n -eq 30 ]; then
+            echo "Backend failed to start"
+            exit 1
+          fi
+          echo "Backend is ready!"
+
+      # Cache frontend deps
+      - name: Cache frontend dependencies
+        uses: actions/cache@v3
+        with:
+          path: Frontend/node_modules
+          key: ${{ runner.os }}-frontend-${{ hashFiles('Frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-
 
       - name: Setup Node for Frontend
         uses: actions/setup-node@v4
