@@ -11,17 +11,28 @@ jobs:
         ports:
           - 27017:27017
 
-    defaults:
-      run:
-        working-directory: Frontend
-
     steps:
       - uses: actions/checkout@v3
+
+      - name: Setup Backend
+        working-directory: Backend
+        env:
+          MONGODB_CONNECTION: mongodb://mongo:27017/Pharmachy_Dashboard
+        run: |
+          npm install
+          npm start &
+
+      - name: Wait for backend to be ready
+        run: sleep 10
 
       - uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      - run: npm install
+      - name: Install Frontend Dependencies
+        working-directory: Frontend
+        run: npm install
 
-      - run: npm test -- --watchAll=false
+      - name: Run Frontend Tests
+        working-directory: Frontend
+        run: npm test -- --watchAll=false
