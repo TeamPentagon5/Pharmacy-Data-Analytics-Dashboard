@@ -5,42 +5,53 @@ on: [push, pull_request]
 jobs:
   frontend-tests:
     runs-on: ubuntu-latest
+
     services:
       mongo:
         image: mongo:5.0
         ports:
           - 27017:27017
 
+    env:
+      MONGODB_CONNECTION: mongodb://mongo:27017/Pharmachy_Dashboard
+      HTTP_PROXY: ''
+      HTTPS_PROXY: ''
+
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Backend
-        working-directory: Backend
-        env:
-          MONGODB_CONNECTION: mongodb://mongo:27017/Pharmachy_Dashboard
-        run: |
-          npm install
-          npm start &
+      - name: Setup Node for Backend
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
 
-      - name: Wait for backend to be ready
+      - name: Install Backend Dependencies
+        working-directory: Backend
+        run: npm install
+
+      - name: Start Backend
+        working-directory: Backend
         run: |
+          npm start &
+          echo "Waiting for backend to be ready..."
           for i in {1..20}; do
             if curl --silent http://localhost:5000/; then
-              echo "Backend is up"
+              echo "✅ Backend is up!"
               break
             else
-              echo "Waiting for backend..."
-              sleep 2
+              echo "⏳ Still waiting for backend..."
+              sleep 3
             fi
           done
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node for Frontend
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
       - name: Install Frontend Dependencies
         working-directory: Frontend
-        run: npm install
+        run: npm install --ignore-scripts
 
       - name: Run Frontend Tests
         working-directory: Frontend
