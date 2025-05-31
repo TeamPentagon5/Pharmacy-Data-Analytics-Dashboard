@@ -28,22 +28,21 @@ jobs:
         working-directory: Backend
         run: npm ci
 
-      # Free port 5000 if needed
+      # Free port 5000 if busy
       - name: Free port 5000 if busy
         run: |
           if lsof -i :5000; then
             echo "Port 5000 is busy, killing the process"
-            lsof -t -i :5000 | xargs kill -9
+            lsof -t -i :5000 | xargs kill -9 || true
           else
             echo "Port 5000 is free"
           fi
 
-      # Start Backend
+      # Start Backend and wait until ready
       - name: Start Backend and wait until ready
         working-directory: Backend
         run: |
           nohup npm start > backend.log 2>&1 &
-
           echo "Waiting for backend to be ready on port 5000..."
           for i in {1..30}; do
             if curl --silent http://localhost:5000/ > /dev/null; then
@@ -53,7 +52,6 @@ jobs:
             echo "Still waiting for backend... ($i)"
             sleep 3
           done
-
           echo "Backend failed to start in time. Showing logs:"
           cat backend.log
           exit 1
