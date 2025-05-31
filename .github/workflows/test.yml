@@ -1,0 +1,43 @@
+name: React Frontend Tests
+
+on: [push, pull_request]
+
+jobs:
+  frontend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Frontend
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: ℹ️ Show current directory and files
+        run: |
+          pwd
+          ls -la
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: ℹ️ Check Node & npm versions
+        run: |
+          node -v
+          npm -v
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 📦 Install Dependencies (Frontend)
+        run: npm install
+
+      - name: 🧪 Run Tests (Frontend)
+        run: npm test -- --watchAll=false --verbose
