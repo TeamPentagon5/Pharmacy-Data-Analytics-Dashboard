@@ -25,13 +25,24 @@ jobs:
 
       - name: Install Backend Dependencies
         working-directory: Backend
-        run: npm install --ignore-scripts
+        run: npm ci
+
+      # Free port 5000 if busy before starting backend
+      - name: Free port 5000 if busy
+        run: |
+          if lsof -i :5000; then
+            echo "Port 5000 is busy, killing process"
+            lsof -t -i :5000 | xargs kill -9
+          else
+            echo "Port 5000 is free"
+          fi
 
       # Start backend and wait for it to be ready
       - name: Start Backend and wait
         working-directory: Backend
         run: |
           npm start &           # start backend in background
+          sleep 5               # wait a few seconds before polling
           n=0
           until curl --silent http://localhost:5000/ || [ $n -eq 30 ]; do
             echo "Waiting for backend to be ready..."
@@ -60,7 +71,7 @@ jobs:
 
       - name: Install Frontend Dependencies
         working-directory: Frontend
-        run: npm install --ignore-scripts
+        run: npm ci
 
       - name: Run Frontend Tests
         working-directory: Frontend
