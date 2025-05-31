@@ -7,9 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # Cache backend deps
+      # Cache backend dependencies
       - name: Cache backend dependencies
         uses: actions/cache@v3
         with:
@@ -18,7 +19,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-backend-
 
-      - name: Setup Node for Backend
+      - name: Setup Node.js for Backend
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -27,35 +28,37 @@ jobs:
         working-directory: Backend
         run: npm ci
 
-      # Free port 5000 if busy before starting backend
+      # Free port 5000 if needed
       - name: Free port 5000 if busy
         run: |
           if lsof -i :5000; then
-            echo "Port 5000 is busy, killing process"
+            echo "Port 5000 is busy, killing the process"
             lsof -t -i :5000 | xargs kill -9
           else
             echo "Port 5000 is free"
           fi
 
-      # Start backend and wait for it to be ready
-      - name: Start Backend and wait
+      # Start Backend
+      - name: Start Backend and wait until ready
         working-directory: Backend
         run: |
-          npm start &           # start backend in background
-          sleep 5               # wait a few seconds before polling
-          n=0
-          until curl --silent http://localhost:5000/ || [ $n -eq 30 ]; do
-            echo "Waiting for backend to be ready..."
-            sleep 3
-            n=$((n+1))
-          done
-          if [ $n -eq 30 ]; then
-            echo "Backend failed to start"
-            exit 1
-          fi
-          echo "Backend is ready!"
+          nohup npm start > backend.log 2>&1 &
 
-      # Cache frontend deps
+          echo "Waiting for backend to be ready on port 5000..."
+          for i in {1..30}; do
+            if curl --silent http://localhost:5000/ > /dev/null; then
+              echo "Backend is ready!"
+              exit 0
+            fi
+            echo "Still waiting for backend... ($i)"
+            sleep 3
+          done
+
+          echo "Backend failed to start in time. Showing logs:"
+          cat backend.log
+          exit 1
+
+      # Cache frontend dependencies
       - name: Cache frontend dependencies
         uses: actions/cache@v3
         with:
@@ -64,7 +67,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-frontend-
 
-      - name: Setup Node for Frontend
+      - name: Setup Node.js for Frontend
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -76,3 +79,8 @@ jobs:
       - name: Run Frontend Tests
         working-directory: Frontend
         run: npm test -- --watchAll=false
+
+      # Optional: Stop backend after tests
+      - name: Kill background backend process
+        run: |
+          pkill -f "node app.js" || echo "No background process to kill"
