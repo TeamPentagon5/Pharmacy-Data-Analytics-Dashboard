@@ -27,7 +27,8 @@ jobs:
 
       - name: Install Backend Dependencies
         working-directory: Backend
-        run: npm install
+        run: npm install --ignore-scripts
+
 
       - name: Start Backend
         working-directory: Backend
