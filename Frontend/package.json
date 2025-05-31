@@ -9,10 +9,8 @@
     "@mui/material": "^5.10.7",
     "@mui/x-data-grid": "^5.17.5",
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "proxy": "http://localhost:5000",
-    "axios": "^1.7.9",
+    "axios": "^1.9.0",
     "react": "^18.2.0",
     "react-admin-dashboard": "file:",
     "react-circular-progressbar": "^2.1.0",
@@ -29,6 +27,7 @@
     "lint:fix": "eslint . --ext .js,.jsx --fix",
     "build": "react-scripts build",
     "test": "react-scripts test",
+     "test": "jest",
     "eject": "react-scripts eject",
     "proxy": "http://localhost:5000"
   },
@@ -52,7 +51,12 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.5.4",
-    "@babel/preset-react": "^7.26.3",
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
+    "@testing-library/react": "^16.3.0",
+    "babel-jest": "^30.0.0-beta.3",
     "eslint": "^8.2.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "^8.5.0",
@@ -61,6 +65,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^27.5.1",
     "prettier": "^2.7.1"
   }
 }
