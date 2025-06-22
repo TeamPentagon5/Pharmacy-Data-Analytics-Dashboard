@@ -1,16 +1,16 @@
-name: React Frontend Tests
+name: Frontend and Backend Unit Testing
 
 on: [push, pull_request]
 
 jobs:
-  frontend-tests:
+  frontend_backend-tests:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Cache backend dependencies
+
       - name: Cache backend dependencies
         uses: actions/cache@v3
         with:
@@ -28,7 +28,7 @@ jobs:
         working-directory: Backend
         run: npm ci
 
-      # Free port 5000 if busy
+
       - name: Free port 5000 if busy
         run: |
           if lsof -i :5000; then
@@ -56,7 +56,7 @@ jobs:
           cat backend.log
           exit 1
 
-      # Cache frontend dependencies
+
       - name: Cache frontend dependencies
         uses: actions/cache@v3
         with:
@@ -78,7 +78,6 @@ jobs:
         working-directory: Frontend
         run: npm test -- --watchAll=false
 
-      # Optional: Stop backend after tests
       - name: Kill background backend process
         run: |
           pkill -f "node app.js" || echo "No background process to kill"
