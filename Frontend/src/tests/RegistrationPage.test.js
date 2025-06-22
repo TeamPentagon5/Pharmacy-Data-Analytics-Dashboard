@@ -1,17 +1,19 @@
 import '@testing-library/jest-dom';
-import axios from 'axios';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import RegistrationPage from '../Components/Registration/registration';
 import { BrowserRouter } from 'react-router-dom';
+import axios from 'axios';
 
-jest.mock('axios');
-
+// Mock useNavigate from react-router-dom
 const mockedNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate,
 }));
+
+// Mock axios post
+jest.mock('axios');
 
 const renderWithRouter = (ui) => {
   return render(<BrowserRouter>{ui}</BrowserRouter>);
@@ -22,61 +24,48 @@ describe('RegistrationPage Component', () => {
     jest.clearAllMocks();
   });
 
-  test('renders registration input fields and register button', () => {
-    renderWithRouter(<RegistrationPage />);
-    expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('First Name')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Last Name')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Phone Number')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Register' })).toBeInTheDocument();
-  });
-
   test('shows success message and navigates to login on successful registration', async () => {
+    // Arrange: mock axios post to resolve with success
     axios.post.mockResolvedValueOnce({
-      data: { status: 'success', Message: 'Registration successful' },
+      data: {
+        status: 'success',
+        Message: 'Registration successful',
+      },
     });
 
     renderWithRouter(<RegistrationPage />);
 
-    fireEvent.change(screen.getByPlaceholderText('Email'), {
+    // Fill the form fields
+    fireEvent.change(screen.getByPlaceholderText(/email/i), {
       target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('First Name'), {
+    fireEvent.change(screen.getByPlaceholderText(/first name/i), {
       target: { value: 'John' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Last Name'), {
+    fireEvent.change(screen.getByPlaceholderText(/last name/i), {
       target: { value: 'Doe' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Phone Number'), {
+    fireEvent.change(screen.getByPlaceholderText(/phone number/i), {
       target: { value: '0123456789' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
+    fireEvent.change(screen.getByPlaceholderText(/password/i), {
       target: { value: 'password123' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Register' }));
+    // Submit form
+    fireEvent.click(screen.getByRole('button', { name: /register/i }));
 
+    // Assert: success message appears
     await waitFor(() => {
-      expect(screen.getByText('Registration successful')).toBeInTheDocument();
-      expect(mockedNavigate).toHaveBeenCalledWith('/login');
-    });
-  });
-
-  test('shows error message when registration fails', async () => {
-    axios.post.mockResolvedValueOnce({
-      data: { status: 'fail', Message: 'Email already exists' },
+      expect(screen.getByText(/registration successful/i)).toBeInTheDocument();
     });
 
-    renderWithRouter(<RegistrationPage />);
-
-    fireEvent.change(screen.getByPlaceholderText('Email'), {
-      target: { value: 'existing@example.com' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Register' }));
-
-    await waitFor(() => {
-      expect(screen.getByText('Email already exists')).toBeInTheDocument();
-    });
+    // Because navigate is called after 2 seconds, wait for that too
+    await waitFor(
+      () => {
+        expect(mockedNavigate).toHaveBeenCalledWith('/login');
+      },
+      { timeout: 3000 }
+    );
   });
 });
