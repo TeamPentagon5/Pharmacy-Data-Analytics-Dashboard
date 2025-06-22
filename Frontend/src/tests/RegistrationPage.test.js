@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import axios from 'axios';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import RegistrationPage from '../Components/registration/registration';
+import RegistrationPage from '../Components/Registration/registration';
 import { BrowserRouter } from 'react-router-dom';
 
 jest.mock('axios');
