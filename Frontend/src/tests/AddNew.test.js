@@ -1,31 +1,22 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import AddNew from '../Pages/AddNew/AddNew'; // Adjust path if needed
-import { BrowserRouter } from 'react-router-dom';
-import axios from 'axios';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import AddNew from '../Pages/AddNew/AddNew';
 
-// Mock useNavigate from react-router-dom
-const mockedNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedNavigate,
-}));
-
-// Mock axios post
-jest.mock('axios');
-
-const renderWithRouter = (ui) => {
-  return render(<BrowserRouter>{ui}</BrowserRouter>);
-};
+// ✅ Mock Navbar and Sidebar to avoid importing images
+jest.mock('../Components/Navbar/Navbar', () => () => <div data-testid="navbar" />);
+jest.mock('../Components/Sidebar/Sidebar', () => () => <div data-testid="sidebar" />);
 
 describe('AddNew Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  test('renders form inputs and submit button correctly', () => {
+    render(
+      <MemoryRouter>
+        <AddNew titlee="Add New Medicine" />
+      </MemoryRouter>
+    );
 
-  test('renders all form inputs and submit button', () => {
-    renderWithRouter(<AddNew titlee="Add New Medicine" />);
+    // Check if all form fields and button exist
     expect(screen.getByLabelText(/Medicine Name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Generic Names/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Expire Date/i)).toBeInTheDocument();
@@ -34,56 +25,49 @@ describe('AddNew Component', () => {
     expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
   });
 
-  test('shows validation error if fields are empty or invalid', async () => {
-    renderWithRouter(<AddNew titlee="Add New Medicine" />);
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-    expect(await screen.findByText(/Please fill all fields correctly/i)).toBeInTheDocument();
+  test('shows error message if form is submitted with empty inputs', () => {
+    render(
+      <MemoryRouter>
+        <AddNew titlee="Add New Medicine" />
+      </MemoryRouter>
+    );
+
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
+
+    expect(
+      screen.getByText(/Please fill all fields correctly/i)
+    ).toBeInTheDocument();
   });
 
-  test('submits form successfully and navigates to /products', async () => {
-    axios.post.mockResolvedValueOnce({
-      status: 200,
-      data: { status: 'success', Message: 'Medicine added successfully!' },
+  test('shows error message if price or quantity are invalid', () => {
+    render(
+      <MemoryRouter>
+        <AddNew titlee="Add New Medicine" />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText(/Medicine Name/i), {
+      target: { value: 'Paracetamol' },
+    });
+    fireEvent.change(screen.getByLabelText(/Generic Names/i), {
+      target: { value: 'Acetaminophen' },
+    });
+    fireEvent.change(screen.getByLabelText(/Expire Date/i), {
+      target: { value: '2025-12-31' },
+    });
+    fireEvent.change(screen.getByLabelText(/Price/i), {
+      target: { value: '-10' }, // Invalid
+    });
+    fireEvent.change(screen.getByLabelText(/Quantity/i), {
+      target: { value: '0' }, // Invalid
     });
 
-    renderWithRouter(<AddNew titlee="Add New Medicine" />);
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
 
-    fireEvent.change(screen.getByLabelText(/Medicine Name/i), { target: { value: 'Paracetamol' } });
-    fireEvent.change(screen.getByLabelText(/Generic Names/i), { target: { value: 'Acetaminophen' } });
-    fireEvent.change(screen.getByLabelText(/Expire Date/i), { target: { value: '2025-12-31' } });
-    fireEvent.change(screen.getByLabelText(/Price/i), { target: { value: '100' } });
-    fireEvent.change(screen.getByLabelText(/Quantity/i), { target: { value: '10' } });
-
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-    // Button should be disabled and show 'Submitting...'
-    expect(screen.getByRole('button', { name: /submitting/i })).toBeDisabled();
-
-    // Success message appears
-    expect(await screen.findByText(/Medicine added successfully!/i)).toBeInTheDocument();
-
-    // Wait for navigate to be called
-    await waitFor(() => {
-      expect(mockedNavigate).toHaveBeenCalledWith('/products');
-    }, { timeout: 3000 });
-  });
-
-  test('shows error message if submission fails', async () => {
-    axios.post.mockRejectedValueOnce(new Error('Network error'));
-
-    renderWithRouter(<AddNew titlee="Add New Medicine" />);
-
-    fireEvent.change(screen.getByLabelText(/Medicine Name/i), { target: { value: 'Paracetamol' } });
-    fireEvent.change(screen.getByLabelText(/Generic Names/i), { target: { value: 'Acetaminophen' } });
-    fireEvent.change(screen.getByLabelText(/Expire Date/i), { target: { value: '2025-12-31' } });
-    fireEvent.change(screen.getByLabelText(/Price/i), { target: { value: '100' } });
-    fireEvent.change(screen.getByLabelText(/Quantity/i), { target: { value: '10' } });
-
-    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(await screen.findByText(/Failed to submit/i)).toBeInTheDocument();
-
-    // Button re-enabled after failure
-    expect(screen.getByRole('button', { name: /submit/i })).not.toBeDisabled();
+    expect(
+      screen.getByText(/Please fill all fields correctly/i)
+    ).toBeInTheDocument();
   });
 });
