@@ -29,4 +29,37 @@ trends, and patient prescriptions efficiently, enabling data-driven decision-mak
 metrics, this dashboard enhances operational efficiency, reduces waste, and improves patient care,
 ultimately driving better outcomes for both pharmacy staff and customers.
 
-           
+# How to Run the Project
+
+1️⃣ Clone the Repository
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+> Replace the URL with your actual repository link.
+
+2️⃣ Backend Setup
+1. Navigate to the backend folder:
+   cd Backend   
+2. Install dependencies (if needed):
+   npm install
+3. Start the backend server:
+   npx nodemon app.js
+   - Expected output: `Connected to port 5000`
+
+ 3️⃣ Frontend Setup
+1. Open a **new terminal** in the project root
+2. Navigate to the frontend folder:
+   cd Frontend
+3. Install dependencies (if needed):
+   npm install
+4. Start the development server:
+   npm start
+   - Automatically opens: `http://localhost:3000`
+ 4️⃣ Access the Dashboard
+- Backend: `http://localhost:5000`
+- Frontend: `http://localhost:3000`
+
+✅ Done
+The project should now be running. For troubleshooting, check the console logs in both terminals.
+
+
+
