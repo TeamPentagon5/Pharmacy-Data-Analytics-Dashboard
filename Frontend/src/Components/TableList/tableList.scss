@@ -1,0 +1,35 @@
+.medicine_table {
+  margin: 20px auto;
+  width: 90%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
+  .table_header {
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .table_cell {
+    text-align: center;
+    font-size: 14px;
+    padding: 12px;
+
+    &:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  }
+
+  // Hover effect on table rows
+  tbody tr:hover {
+    background-color: #e6f7ff;
+    cursor: pointer;
+  }
+
+  // Button styles
+  button {
+    font-size: 12px;
+    text-transform: none;
+  }
+}

@@ -1,0 +1,83 @@
+name: Frontend and Backend Unit Testing
+
+on: [push, pull_request]
+
+jobs:
+  frontend_backend-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+
+      - name: Cache backend dependencies
+        uses: actions/cache@v3
+        with:
+          path: Backend/node_modules
+          key: ${{ runner.os }}-backend-${{ hashFiles('Backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-
+
+      - name: Setup Node.js for Backend
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Backend Dependencies
+        working-directory: Backend
+        run: npm ci
+
+
+      - name: Free port 5000 if busy
+        run: |
+          if lsof -i :5000; then
+            echo "Port 5000 is busy, killing the process"
+            lsof -t -i :5000 | xargs kill -9 || true
+          else
+            echo "Port 5000 is free"
+          fi
+
+      # Start Backend and wait until ready
+      - name: Start Backend and wait until ready
+        working-directory: Backend
+        run: |
+          nohup npm start > backend.log 2>&1 &
+          echo "Waiting for backend to be ready on port 5000..."
+          for i in {1..30}; do
+            if curl --silent http://localhost:5000/ > /dev/null; then
+              echo "Backend is ready!"
+              exit 0
+            fi
+            echo "Still waiting for backend... ($i)"
+            sleep 3
+          done
+          echo "Backend failed to start in time. Showing logs:"
+          cat backend.log
+          exit 1
+
+
+      - name: Cache frontend dependencies
+        uses: actions/cache@v3
+        with:
+          path: Frontend/node_modules
+          key: ${{ runner.os }}-frontend-${{ hashFiles('Frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-
+
+      - name: Setup Node.js for Frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Frontend Dependencies
+        working-directory: Frontend
+        run: npm ci
+
+      - name: Run Frontend Tests
+        working-directory: Frontend
+        run: npm test -- --watchAll=false
+
+      - name: Kill background backend process
+        run: |
+          pkill -f "node app.js" || echo "No background process to kill"
