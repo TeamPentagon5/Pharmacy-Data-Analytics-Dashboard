@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom'; // should be imported first for custom matchers
+import '@testing-library/jest-dom'; 
 import axios from 'axios';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 jest.mock('axios'); // Mock axios
 
-// Mock useNavigate once at the top level
+
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
