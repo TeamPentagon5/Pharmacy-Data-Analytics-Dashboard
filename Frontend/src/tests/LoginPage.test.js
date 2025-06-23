@@ -5,7 +5,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from '../Components/login/login';
 import { BrowserRouter } from 'react-router-dom';
 
-jest.mock('axios'); // Mock axios
+jest.mock('axios'); 
 
 
 const mockedNavigate = jest.fn();
